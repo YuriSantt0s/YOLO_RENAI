@@ -1,0 +1,44 @@
+# ── Ambiente virtual ──────────────────────────────
+venv/
+.venv/
+env/
+
+# ── Modelo (arquivo grande, não sobe no git) ──────
+models/
+*.pt
+*.onnx
+*.torchscript
+
+# ── Python ────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# ── Dados e imagens de teste ──────────────────────
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.tif
+*.dcm
+
+# ── Logs e resultados ─────────────────────────────
+*.log
+runs/
+
+# ── VS Code ───────────────────────────────────────
+.vscode/
+
+# ── Sistema ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Variáveis de ambiente ─────────────────────────
+.env
+.env.*
