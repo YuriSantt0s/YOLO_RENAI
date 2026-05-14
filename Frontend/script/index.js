@@ -258,7 +258,7 @@ function renderResultados(data) {
         rotulo: d.classe, desc: "",
       };
       const pct  = Math.round(d.confianca * 100);
-      const b    = d.bbox;
+      const b = d.bbox || {};
       const card = document.createElement("div");
       card.className = "det-card";
       card.setAttribute("role", "listitem");
@@ -280,8 +280,12 @@ function renderResultados(data) {
             ">${cls.desc}</span>
           </div>
           <div class="det-meta">
-            x1:${b.x1} y1:${b.y1} → x2:${b.x2} y2:${b.y2}
-            &nbsp;·&nbsp; ${d.area_px.toLocaleString("pt-BR")} px²
+            x1:${b?.x1 ?? 0}
+            y1:${b?.y1 ?? 0}
+            → x2:${b?.x2 ?? 0}
+            y2:${b?.y2 ?? 0}
+            &nbsp;·&nbsp;
+            ${(d.area_px ?? 0).toLocaleString("pt-BR")} px²
           </div>
         </div>
 
