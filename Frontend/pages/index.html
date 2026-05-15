@@ -6,105 +6,118 @@
   <meta name="description" content="Sistema de detecção médica com YOLO — rim, tumor e cisto renal"/>
   <title>Medical Detector — YOLO</title>
   <link rel="stylesheet" href="static/style/index.css"/>
-  <!-- Favicon inline — sem arquivo externo -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231a6fc4'/><rect x='13' y='6' width='6' height='20' rx='2' fill='white'/><rect x='6' y='13' width='20' height='6' rx='2' fill='white'/></svg>"/>
 </head>
-
 <body>
 
-<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
+<!-- HEADER -->
 <header role="banner">
   <div class="logo-mark" aria-hidden="true">MD</div>
-
   <div class="header-title">
     <h1>Medical <span>Detector</span></h1>
-    <span class="header-sub">Detecção renal por YOLO</span>
+    <span class="header-sub">RENAI · Detecção renal por YOLO</span>
   </div>
-
   <div class="status-pill" id="statusPill" role="status" aria-live="polite">
     <div class="dot" aria-hidden="true"></div>
     <span id="statusText">conectando...</span>
   </div>
 </header>
 
-<!-- ══ CONTEÚDO PRINCIPAL ══════════════════════════════════════════════════ -->
+<!-- MAIN -->
 <main role="main">
 
-  <!-- ── Painel esquerdo: upload + controles ──────────────────────────── -->
+  <!-- Painel esquerdo -->
   <section class="panel-left" aria-label="Envio de imagem e controles">
 
-    <!-- Upload -->
-    <div class="upload-zone" id="uploadZone" role="button"
-         tabindex="0" aria-label="Área de upload. Clique ou arraste uma imagem">
-      <input type="file" id="fileInput" accept="image/*,.dcm"
+    <!-- Zona de upload e preview unificada -->
+    <div class="upload-zone" id="uploadZone"
+         role="button" tabindex="0"
+         aria-label="Área de upload. Clique ou arraste uma imagem">
+
+      <!-- Input sempre presente e invisível -->
+      <input type="file" id="fileInput"
+             accept="image/*,.dcm"
              onchange="onFile(this)"
              aria-label="Selecionar arquivo de imagem"/>
 
-      <div class="upload-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+      <!-- Estado inicial: placeholder -->
+      <div class="upload-placeholder" id="uploadPlaceholder">
+        <div class="upload-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="upload-title"><strong>Clique ou arraste</strong> uma imagem</p>
+        <p class="upload-sub">PNG · JPG · TIFF · DICOM</p>
+      </div>
+
+      <!-- Preview da imagem (oculto até carregar) -->
+      <img id="previewImg" class="preview-img" src="" alt=""/>
+
+      <!-- Overlay de troca (aparece no hover quando tem imagem) -->
+      <div class="preview-overlay" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2"
              stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/>
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
+        Clique ou arraste para trocar
       </div>
 
-      <p class="upload-title"><strong>Clique ou arraste</strong> uma imagem</p>
-      <p class="upload-sub">PNG · JPG · TIFF · DICOM</p>
     </div>
 
-    <!-- Preview -->
-    <div class="preview-wrap" id="previewWrap" aria-label="Preview da imagem carregada">
-      <span class="preview-label" id="previewLabel">Pré-visualização</span>
-      <img id="previewImg" src="" alt="Imagem médica carregada para análise"/>
+    <!-- Label do arquivo carregado -->
+    <div class="file-info" id="fileInfo" style="display:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <span id="fileInfoText">—</span>
     </div>
 
     <!-- Controles -->
     <div class="controls" role="group" aria-label="Parâmetros de detecção">
-      <div class="controls-card">
 
+      <div class="controls-card">
         <div class="slider-group">
           <label for="confSlider">
             Confiança mínima
-            <span id="confVal" aria-live="polite">15%</span>
+            <span id="confVal">15%</span>
           </label>
-          <input
-            type="range" id="confSlider"
-            min="5" max="90" value="15" step="1"
-            aria-valuemin="5" aria-valuemax="90" aria-valuenow="15"
-            oninput="updateSlider('confSlider','confVal',this.value+'%')"
-          />
+          <input type="range" id="confSlider"
+                 min="5" max="90" value="15" step="1"
+                 aria-valuemin="5" aria-valuemax="90" aria-valuenow="15"
+                 oninput="updateSlider('confSlider','confVal',this.value+'%')"/>
         </div>
 
         <div class="slider-group">
           <label for="iouSlider">
             IoU threshold
-            <span id="iouVal" aria-live="polite">50%</span>
+            <span id="iouVal">50%</span>
           </label>
-          <input
-            type="range" id="iouSlider"
-            min="10" max="90" value="50" step="1"
-            aria-valuemin="10" aria-valuemax="90" aria-valuenow="50"
-            oninput="updateSlider('iouSlider','iouVal',this.value+'%')"
-          />
+          <input type="range" id="iouSlider"
+                 min="10" max="90" value="50" step="1"
+                 aria-valuemin="10" aria-valuemax="90" aria-valuenow="50"
+                 oninput="updateSlider('iouSlider','iouVal',this.value+'%')"/>
         </div>
-
       </div>
 
       <button class="btn-predict" id="btnPredict"
-              onclick="predict()" disabled
-              aria-describedby="btnHelp">
+              onclick="predict()" disabled>
         <div class="spinner" id="spinner" aria-hidden="true"></div>
         <span id="btnLabel">Selecione uma imagem</span>
       </button>
-      <span id="btnHelp" class="sr-only">
-        Após selecionar uma imagem, clique para executar a detecção
-      </span>
-    </div>
 
+    </div>
   </section>
 
-  <!-- ── Painel direito: resultados ───────────────────────────────────── -->
+  <!-- Painel direito -->
   <aside class="panel-right" aria-label="Resultados da detecção">
 
     <div class="panel-right-header">
@@ -125,58 +138,45 @@
       </div>
     </div>
 
-    <!-- Sumário por classe -->
     <div class="summary-panel" id="summaryPanel"
          style="display:none" aria-label="Resumo por classe">
-      <div class="summary-title" aria-hidden="true">resumo por classe</div>
+      <p class="summary-title">resumo por classe</p>
       <div class="summary-classes" role="list">
-
-        <div class="cls-stat" role="listitem"
-             style="border-top: 3px solid var(--rim)">
-          <div class="cls-num" id="sumRim"
-               style="color:var(--rim)" aria-label="Rim">0</div>
+        <div class="cls-stat" role="listitem" style="border-top:3px solid var(--rim)">
+          <div class="cls-num" id="sumRim" style="color:var(--rim)">0</div>
           <div class="cls-lbl">Rim</div>
         </div>
-
-        <div class="cls-stat" role="listitem"
-             style="border-top: 3px solid var(--tumor)">
-          <div class="cls-num" id="sumTumor"
-               style="color:var(--tumor)" aria-label="Tumor">0</div>
+        <div class="cls-stat" role="listitem" style="border-top:3px solid var(--tumor)">
+          <div class="cls-num" id="sumTumor" style="color:var(--tumor)">0</div>
           <div class="cls-lbl">Tumor</div>
         </div>
-
-        <div class="cls-stat" role="listitem"
-             style="border-top: 3px solid var(--cisto)">
-          <div class="cls-num" id="sumCisto"
-               style="color:var(--cisto)" aria-label="Cisto">0</div>
+        <div class="cls-stat" role="listitem" style="border-top:3px solid var(--cisto)">
+          <div class="cls-num" id="sumCisto" style="color:var(--cisto)">0</div>
           <div class="cls-lbl">Cisto</div>
         </div>
-
       </div>
     </div>
 
   </aside>
-
 </main>
 
-<!-- ══ FOOTER ══════════════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer role="contentinfo">
-  <span>Medical Detector © 2025</span>
-  <span id="footerInfo">localhost</span>
+  <span>github · YuriSantt0s</span>
+  <span id="footerInfo">localhost:8000</span>
 </footer>
 
-<!-- Toast de notificação -->
+<!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="assertive">
   <span class="toast-icon" aria-hidden="true">⚠</span>
   <span id="toastMsg"></span>
 </div>
 
-<!-- Texto visível apenas para leitores de tela -->
 <style>
   .sr-only {
-    position: absolute; width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden;
-    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    position:absolute;width:1px;height:1px;
+    padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
   }
 </style>
 

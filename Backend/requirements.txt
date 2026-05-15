@@ -1,5 +1,9 @@
+pillow
 ultralytics
 fastapi
 uvicorn
 python-multipart
-pillow
+opencv-python
+numpy
+pydicom        # para DICOM
+python-dotenv  # para ler o .env
