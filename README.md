@@ -12,16 +12,18 @@ Detecção automática de:
 
 ## 📸 Preview
 
-![Preview](https://dummyimage.com/1200x650/e8f1fb/1a2332&text=YOLO+Medical+Detector)
+<img width="1887" height="1022" alt="image" src="https://github.com/user-attachments/assets/45f7aa6d-de5d-4119-964a-9725254bfbd1" />
+
+
 
 ---
 
 # 📌 Sobre o projeto
 
-O **RENAI** é uma aplicação web para análise de imagens médicas utilizando modelos YOLO treinados para identificação de estruturas renais.O modelo foi treinado utilizando a base de dados publica XXXX, disponivel
-na plataforma kagle e desenvolvido no google colab (para vizualizar mais sobre a pipeline de tratamento de dados e treinamento do modelo acesse gitXXXX). O projeto organiza-se sendo uma API rest, 
-unindo front e backend em uma estrutura monolitica 
-monolitica 
+O **RENAI** é uma aplicação web para análise de imagens médicas utilizando modelos YOLO treinados para identificação de estruturas renais. O modelo foi treinado utilizando a base de dados publica KiTS23-2D
+que é um conjunto de dados de cortes axiais 2D derivado dos volumes de tomografia computadorizada (TC) 3D com contraste do KiTS23 (Kidney Tumor Segmentation Challenge 2023), disponivel
+na plataforma kaggle em https://www.kaggle.com/datasets/suvadipchakraborty/kits23-2d-kidney-tumor-segmentation e desenvolvido em nuvem na plataforma google colab (para vizualizar mais sobre a pipeline de tratamento de dados e treinamento do modelo acesse gitXXXX). O projeto organiza-se sendo uma API rest, 
+unindo front e backend em uma estrutura monolítica.
 
 A plataforma permite:
 
